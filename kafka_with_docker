@@ -1,0 +1,31 @@
+#run the containers
+docker-compose up
+
+#make sure containers are running
+docker ps
+
+#run shell
+docker exec -it new-kafka_kafka-1_1 /bin/bash
+
+#stop containers
+docker stop <id1>  <id2>..
+
+#remove all stopped containers
+docker container prune 
+
+#create topic users: kafka-1 is the kafka broker, zookeeper-1 is zookeeper service
+
+docker-compose exec kafka-1 kafka-topics --create --zookeeper zookeeper-1:12181 --replication-factor 1 --partitions 1 --topic users
+>Created topic "users".
+
+#check that it exists
+kafkacat -L -b kafka-1:19092
+
+#produce a message
+kafkacat -P -b kafka-1:19092 -t users
+> this is a message
+
+#consume a message
+kafkacat -C -b kafka-2:19092 -t users
+> this is a message
+
